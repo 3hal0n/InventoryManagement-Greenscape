@@ -1,61 +1,43 @@
 # InventoryManagement-Greenscape
 
-A comprehensive inventory management system for Greenscape, built with React and Node.js.
+A comprehensive inventory management system designed for Greenscape, combining powerful backend logic with a modern, responsive frontend.
 
-## Features
+---
 
-- Create, Read, Update, and Delete inventory items
-- Categorize items by type (Vehicles & Machinery, Construction & Maintenance Supplies, etc.)
-- Track maintenance schedules
-- Monitor quantity and pricing
-- Supplier management
-- Low stock alerts
-- Modern and responsive user interface
+## 🚀 Features
 
-## Tech Stack
+- ✅ Create, Read, Update, and Delete inventory items  
+- 📁 Categorize items by type (e.g., Vehicles & Machinery, Construction Supplies)  
+- 🔧 Track maintenance schedules  
+- 📊 Monitor item quantity and pricing  
+- 🧾 Supplier management and organization  
+- ⚠️ Low stock alerts with reorder management  
+- 💻 Clean and responsive user interface
 
-- Frontend: React.js
-- Backend: Node.js with Express
-- Database: MongoDB
-- Styling: CSS with modern design principles
+---
 
-## Setup
+## 🛠 Tech Stack
 
-1. Clone the repository:
-```bash
-git clone https://github.com/3hal0n/InventoryManagement-Greenscape.git
-```
+| Layer        | Technology         |
+|--------------|--------------------|
+| **Frontend** | React.js           |
+| **Backend**  | Node.js + Express  |
+| **Database** | MongoDB            |
+| **Styling**  | CSS (modern layout & responsiveness)
 
-2. Install dependencies:
-```bash
-# Install backend dependencies
-cd backend
-npm install
+---
 
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
+## 📁 Project Structure
+InventoryManagement-Greenscape/ ├── backend/ # Node.js & Express backend ├── frontend/ # React.js frontend └── LICENSE
 
-3. Start the application:
-```bash
-# Start backend server
-cd backend
-npm start
+---
 
-# Start frontend development server
-cd ../frontend
-npm start
-```
+## 📄 License
 
-## Environment Variables
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more details.
 
-Create a `.env` file in the backend directory with the following variables:
-```
-MONGODB_URI=your_mongodb_connection_string
-PORT=5000
-```
+---
 
-## License
+## 🤝 Contributions
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+Suggestions, issues, and pull requests are welcome. Let's make inventory smarter—together.

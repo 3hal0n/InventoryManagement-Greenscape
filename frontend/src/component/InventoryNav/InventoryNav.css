@@ -1,0 +1,60 @@
+/* InventoryNav.css */
+.inventory-nav {
+  background-color: var(--primary-green); /* Dark Green */
+  padding: 15px;
+  width: 200px; /* Keep original width */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure navbar stays on top */
+}
+
+.inventory-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inventory-nav li {
+  margin: 20px 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white !important; /* Force white text */
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  background-color: var(--secondary-green); /* Light Green */
+  transform: translateX(5px);
+  color: white !important; /* Ensure text stays white on hover */
+}
+
+.nav-link.active {
+  background-color: #FDD835 !important; /* Hard-coded yellow to ensure it works */
+    color: #333 !important; /* Dark text for contrast */
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.icon {
+  margin-right: 10px;
+  transition: transform 0.3s ease-in-out;
+  color: inherit; /* Inherits text color */
+}
+
+.nav-link:hover .icon {
+  transform: scale(1.2);
+}
+
+.warning {
+  color: var(--error-red) !important; /* Alert Red */
+}

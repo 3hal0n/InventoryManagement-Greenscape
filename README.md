@@ -9,6 +9,7 @@ A comprehensive inventory management system for Greenscape, built with React and
 - Track maintenance schedules
 - Monitor quantity and pricing
 - Supplier management
+- Low stock alerts
 - Modern and responsive user interface
 
 ## Tech Stack

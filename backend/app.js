@@ -20,7 +20,7 @@ app.use("/inventories", inventoryRouter);
 app.use("/usage", usageRouter);
 app.use("/maintenance", maintenanceRouter);
 
-mongoose.connect("mongodb+srv://3halon:fnQsm550Po5uSTwb@cluster0.ng1rq.mongodb.net/")
+mongoose.connect("mongodb+srv://username:newpassword@cluster.mongodb.net/yourdb?retryWrites=true&w=majority")//Enter your mongodb link
   .then(() => {
     console.log("Connected to MongoDB");
     app.listen(5000, () => console.log("Listening on port 5000"));

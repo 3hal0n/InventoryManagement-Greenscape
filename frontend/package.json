@@ -13,6 +13,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.8",
     "cra-template": "1.2.0",
+    "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^5.0.2",

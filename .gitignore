@@ -37,3 +37,6 @@ Thumbs.db
 
 # Optional eslint cache
 .eslintcache 
+
+# Ignore environment variables
+.env

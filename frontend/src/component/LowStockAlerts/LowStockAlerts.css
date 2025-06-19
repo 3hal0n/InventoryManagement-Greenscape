@@ -20,17 +20,21 @@
 
 /* Layout */
 .low-stock-page {
-  display: flex;
+  margin-left: 280px;
+  padding: 2rem 2rem;
+  max-width: calc(100% - 220px);
+  box-sizing: border-box;
   min-height: 100vh;
-  background-color: var(--light-gray);
+  background-color: #f4f6f8;
+  border-radius: 5px;
+  padding-top: 5px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--dark-gray);
 }
 
 .alerts-content {
+  padding: 0;
+  margin-left: 0;
   flex-grow: 1;
-  padding: 2rem;
-  margin-left: 250px;
   transition: var(--transition);
 }
 
@@ -177,6 +181,7 @@ td {
   padding: 1rem;
   border-bottom: 1px solid var(--light-gray);
   vertical-align: middle;
+  overflow: hidden;
 }
 
 /* Alert Rows */
@@ -747,4 +752,25 @@ td {
     to {
         transform: rotate(360deg);
     }
+}
+
+.action-button {
+  display: inline-block;
+  padding: 0.9rem 1.4rem;
+  background-color: #1B5E20;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 500;
+  text-align: center;
+}
+
+.action-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+table, th, td {
+  color: #141414;
 }

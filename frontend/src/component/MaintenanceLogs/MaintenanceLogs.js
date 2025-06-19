@@ -4,9 +4,54 @@ import './MaintenanceLogs.css';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { applyPlugin } from 'jspdf-autotable';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import startOfWeek from 'date-fns/startOfWeek';
+import getDay from 'date-fns/getDay';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useAuth } from '../../context/AuthContext';
+import InventoryNav from '../InventoryNav/InventoryNav';
+
 applyPlugin(jsPDF);
 
+const locales = {
+  'en-US': require('date-fns/locale/en-US')
+};
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
+
+const MaintenanceCalendar = ({ events, onEventSelect }) => {
+  return (
+    <div style={{ height: '700px' }}>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        onSelectEvent={onEventSelect}
+        eventPropGetter={(event) => ({
+          style: {
+            backgroundColor: event.resource.status === 'Completed' ? '#28a745' : 
+                         event.resource.status === 'In Progress' ? '#ffc107' : '#dc3545',
+            color: 'white',
+            borderRadius: '4px',
+            border: 'none'
+          }
+        })}
+      />
+    </div>
+  );
+};
+
 const MaintenanceLogs = () => {
+    const { token } = useAuth();
     const [logs, setLogs] = useState([]);
     const [formData, setFormData] = useState({
         itemId: '',
@@ -18,24 +63,29 @@ const MaintenanceLogs = () => {
         nextMaintenanceDate: '',
         status: ''
     });
-    //To store state for form validation errors
     const [errors, setErrors] = useState({});
+    const [view, setView] = useState('table');
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
-        fetchLogs();
-    }, []);
+        if (token) {
+            fetchLogs();
+        }
+    }, [token]);
 
-    //fetch maintenance logs from the server
     const fetchLogs = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/maintenance');
+            const response = await axios.get('http://localhost:5000/maintenance', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             setLogs(response.data.maintenanceRecords);
         } catch (error) {
             console.error('Error fetching maintenance logs:', error);
         }
     };
 
-    //handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -88,62 +138,71 @@ const MaintenanceLogs = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    //handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return; //don't submit if validation fails
+        if (!validateForm()) return;
 
         try {
-            await axios.post('http://localhost:5000/maintenance', formData);
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+
+            if (editingId) {
+                await axios.put(`http://localhost:5000/maintenance/${editingId}`, formData, { headers });
+            } else {
+                await axios.post('http://localhost:5000/maintenance', formData, { headers });
+            }
             fetchLogs();
-            //reset form after successful submission
-            setFormData({
-                itemId: '',
-                itemName: '',
-                maintenanceType: '',
-                maintenanceDate: '',
-                performedBy: '',
-                cost: '',
-                nextMaintenanceDate: '',
-                status: ''
-            });
-            setErrors({});
+            resetForm();
         } catch (error) {
-            console.error('Error adding maintenance log:', error);
+            console.error('Error saving maintenance log:', error);
         }
     };
 
-    const handleUpdate = async (id) => {
-        if (!validateForm()) return;
-        try {
-            await axios.put(`http://localhost:5000/maintenance/${id}`, formData);
-            fetchLogs();
-        } catch (error) {
-            console.error('Error updating maintenance log:', error);
-        }
+    const resetForm = () => {
+        setFormData({
+            itemId: '',
+            itemName: '',
+            maintenanceType: '',
+            maintenanceDate: '',
+            performedBy: '',
+            cost: '',
+            nextMaintenanceDate: '',
+            status: ''
+        });
+        setErrors({});
+        setEditingId(null);
     };
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/maintenance/${id}`);
+            await axios.delete(`http://localhost:5000/maintenance/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             fetchLogs();
+            if (editingId === id) {
+                resetForm();
+            }
         } catch (error) {
             console.error('Error deleting maintenance log:', error);
         }
     };
 
-    //populate form fields with data for updating
     const populateFormForUpdate = (log) => {
         setFormData({
             itemId: log.itemId,
             itemName: log.itemName,
             maintenanceType: log.maintenanceType,
-            maintenanceDate: log.maintenanceDate,
+            maintenanceDate: log.maintenanceDate.split('T')[0],
             performedBy: log.performedBy,
             cost: log.cost,
-            nextMaintenanceDate: log.nextMaintenanceDate,
+            nextMaintenanceDate: log.nextMaintenanceDate ? log.nextMaintenanceDate.split('T')[0] : '',
             status: log.status
         });
+        setEditingId(log._id);
     };
 
     const generateReport = () => {
@@ -206,165 +265,228 @@ const MaintenanceLogs = () => {
         doc.save('maintenance_logs_report.pdf');
     };
 
+    const getCalendarEvents = () => {
+        return logs.map(log => ({
+            title: `${log.itemName} - ${log.maintenanceType}`,
+            start: new Date(log.maintenanceDate),
+            end: new Date(log.maintenanceDate),
+            allDay: true,
+            resource: log
+        }));
+    };
+
     return (
         <div className="maintenance-logs-container">
+            <InventoryNav />
             <h1 className="maintenance-title">Maintenance Logs</h1>
-            <form className="maintenance-form" onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <input
-                        type="text"
-                        name="itemId"
-                        placeholder="Item ID"
-                        value={formData.itemId}
-                        onChange={handleChange}
-                        className={errors.itemId ? 'error-input' : ''}
-                    />
-                    {errors.itemId && <span className="error-message">{errors.itemId}</span>}
-                </div>
-
-                <div className="form-group">
-                    <input
-                        type="text"
-                        name="itemName"
-                        placeholder="Item Name"
-                        value={formData.itemName}
-                        onChange={handleChange}
-                        className={errors.itemName ? 'error-input' : ''}
-                    />
-                    {errors.itemName && <span className="error-message">{errors.itemName}</span>}
-                </div>
-
-{/* maintenance type dropdown */}
-                <div className="form-group">
-                    <select
-                        name="maintenanceType"
-                        value={formData.maintenanceType}
-                        onChange={handleChange}
-                        className={errors.maintenanceType ? 'error-input' : ''}
-                    >
-                        <option value="">Select Maintenance Type</option>
-                        <option value="Repair">Repair</option>
-                        <option value="Replacement">Replacement</option>
-                        <option value="Inspection">Inspection</option>
-                        <option value="Cleaning">Cleaning</option>
-                    </select>
-                    {errors.maintenanceType && <span className="error-message">{errors.maintenanceType}</span>}
-                </div>
-
-                <div className="form-group">
-                    <input
-                        type="date"
-                        name="maintenanceDate"
-                        value={formData.maintenanceDate}
-                        onChange={handleChange}
-                        className={errors.maintenanceDate ? 'error-input' : ''}
-                    />
-                    {errors.maintenanceDate && <span className="error-message">{errors.maintenanceDate}</span>}
-                </div>
-
-                <div className="form-group">
-                    <input
-                        type="text"
-                        name="performedBy"
-                        placeholder="Performed By"
-                        value={formData.performedBy}
-                        onChange={handleChange}
-                        className={errors.performedBy ? 'error-input' : ''}
-                    />
-                    {errors.performedBy && <span className="error-message">{errors.performedBy}</span>}
-                </div>
-
-                <div className="form-group">
-                    <input
-                        type="number"
-                        name="cost"
-                        placeholder="Cost"
-                        value={formData.cost}
-                        onChange={handleChange}
-                        min="0"
-                        className={errors.cost ? 'error-input' : ''}
-                    />
-                    {errors.cost && <span className="error-message">{errors.cost}</span>}
-                </div>
-
-                <div className="form-group">
-                    <input
-                        type="date"
-                        name="nextMaintenanceDate"
-                        value={formData.nextMaintenanceDate}
-                        onChange={handleChange}
-                        className={errors.nextMaintenanceDate ? 'error-input' : ''}
-                    />
-                    {errors.nextMaintenanceDate && <span className="error-message">{errors.nextMaintenanceDate}</span>}
-                </div>
-
-                <div className="form-group">
-                    <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        className={errors.status ? 'error-input' : ''}
-                    >
-                        <option value="">Select Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Completed">Completed</option>
-                        <option value="In Progress">In Progress</option>
-                    </select>
-                    {errors.status && <span className="error-message">{errors.status}</span>}
-                </div>
-
-                <button type="submit" className="form-submit-btn">Add Log</button>
-            </form>
-
-            <button className="generate-report-btn" onClick={generateReport}>
-                Generate Report
-            </button>
-
-            <div className="table-wrapper">
-                <table className="maintenance-table">
-                    <thead>
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Item Name</th>
-                            <th>Maintenance Type</th>
-                            <th>Date</th>
-                            <th>Performed By</th>
-                            <th>Cost</th>
-                            <th>Next Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {logs.map((log) => (
-                            <tr key={log._id}>
-                                <td>{log.itemId}</td>
-                                <td>{log.itemName}</td>
-                                <td>{log.maintenanceType}</td>
-                                <td>{new Date(log.maintenanceDate).toLocaleDateString()}</td>
-                                <td>{log.performedBy}</td>
-                                <td>{log.cost}</td>
-                                <td>{log.nextMaintenanceDate ? new Date(log.nextMaintenanceDate).toLocaleDateString() : 'N/A'}</td>
-                                <td>{log.status}</td>
-                                <td>
-                                    <button 
-                                        className="update-btn"
-                                        onClick={() => populateFormForUpdate(log)}
-                                    >
-                                        Update
-                                    </button>
-                                    <button 
-                                        className="delete-btn"
-                                        onClick={() => handleDelete(log._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            
+            <div className="view-toggle">
+                <button 
+                    className={`toggle-btn ${view === 'table' ? 'active' : ''}`}
+                    onClick={() => setView('table')}
+                >
+                    Table View
+                </button>
+                <button 
+                    className={`toggle-btn ${view === 'calendar' ? 'active' : ''}`}
+                    onClick={() => setView('calendar')}
+                >
+                    Calendar View
+                </button>
             </div>
+
+            {view === 'calendar' ? (
+                <MaintenanceCalendar 
+                    events={getCalendarEvents()}
+                    onEventSelect={(event) => populateFormForUpdate(event.resource)}
+                />
+            ) : (
+                <>
+                    <form className="maintenance-form" onSubmit={handleSubmit}>
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Item ID</label>
+                                <input
+                                    type="text"
+                                    name="itemId"
+                                    value={formData.itemId}
+                                    onChange={handleChange}
+                                    className={errors.itemId ? 'error-input' : ''}
+                                />
+                                {errors.itemId && <span className="error-message">{errors.itemId}</span>}
+                            </div>
+
+                            <div className="form-group">
+                                <label>Item Name</label>
+                                <input
+                                    type="text"
+                                    name="itemName"
+                                    value={formData.itemName}
+                                    onChange={handleChange}
+                                    className={errors.itemName ? 'error-input' : ''}
+                                />
+                                {errors.itemName && <span className="error-message">{errors.itemName}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Maintenance Type</label>
+                                <select
+                                    name="maintenanceType"
+                                    value={formData.maintenanceType}
+                                    onChange={handleChange}
+                                    className={errors.maintenanceType ? 'error-input' : ''}
+                                >
+                                    <option value="">Select Type</option>
+                                    <option value="Repair">Repair</option>
+                                    <option value="Replacement">Replacement</option>
+                                    <option value="Inspection">Inspection</option>
+                                    <option value="Cleaning">Cleaning</option>
+                                </select>
+                                {errors.maintenanceType && <span className="error-message">{errors.maintenanceType}</span>}
+                            </div>
+
+                            <div className="form-group">
+                                <label>Status</label>
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    className={errors.status ? 'error-input' : ''}
+                                >
+                                    <option value="">Select Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="In Progress">In Progress</option>
+                                </select>
+                                {errors.status && <span className="error-message">{errors.status}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Maintenance Date</label>
+                                <input
+                                    type="date"
+                                    name="maintenanceDate"
+                                    value={formData.maintenanceDate}
+                                    onChange={handleChange}
+                                    className={errors.maintenanceDate ? 'error-input' : ''}
+                                />
+                                {errors.maintenanceDate && <span className="error-message">{errors.maintenanceDate}</span>}
+                            </div>
+
+                            <div className="form-group">
+                                <label>Next Maintenance Date</label>
+                                <input
+                                    type="date"
+                                    name="nextMaintenanceDate"
+                                    value={formData.nextMaintenanceDate}
+                                    onChange={handleChange}
+                                    className={errors.nextMaintenanceDate ? 'error-input' : ''}
+                                />
+                                {errors.nextMaintenanceDate && <span className="error-message">{errors.nextMaintenanceDate}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Performed By</label>
+                                <input
+                                    type="text"
+                                    name="performedBy"
+                                    value={formData.performedBy}
+                                    onChange={handleChange}
+                                    className={errors.performedBy ? 'error-input' : ''}
+                                />
+                                {errors.performedBy && <span className="error-message">{errors.performedBy}</span>}
+                            </div>
+
+                            <div className="form-group">
+                                <label>Cost</label>
+                                <input
+                                    type="number"
+                                    name="cost"
+                                    value={formData.cost}
+                                    onChange={handleChange}
+                                    min="0"
+                                    step="0.01"
+                                    className={errors.cost ? 'error-input' : ''}
+                                />
+                                {errors.cost && <span className="error-message">{errors.cost}</span>}
+                            </div>
+                        </div>
+
+                        <div className="form-actions">
+                            <button type="submit" className="maintenance-btn">
+                                {editingId ? 'Update Log' : 'Add Log'}
+                            </button>
+                            {editingId && (
+                                <button type="button" className="maintenance-btn" onClick={resetForm}>
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
+                    </form>
+
+                    <div className="actions-bar">
+                        <button className="generate-report-btn" onClick={generateReport}>
+                            Generate Report
+                        </button>
+                    </div>
+
+                    <div className="table-wrapper">
+                        <table className="maintenance-table">
+                            <thead>
+                                <tr>
+                                    <th>Item ID</th>
+                                    <th>Item Name</th>
+                                    <th>Maintenance Type</th>
+                                    <th>Date</th>
+                                    <th>Performed By</th>
+                                    <th>Cost</th>
+                                    <th>Next Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {logs.map((log) => (
+                                    <tr key={log._id}>
+                                        <td>{log.itemId}</td>
+                                        <td>{log.itemName}</td>
+                                        <td>{log.maintenanceType}</td>
+                                        <td>{new Date(log.maintenanceDate).toLocaleDateString()}</td>
+                                        <td>{log.performedBy}</td>
+                                        <td>{log.cost}</td>
+                                        <td>{log.nextMaintenanceDate ? new Date(log.nextMaintenanceDate).toLocaleDateString() : 'N/A'}</td>
+                                        <td>
+                                            <span className={`status-badge ${log.status.toLowerCase().replace(' ', '-')}`}>
+                                                {log.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button 
+                                                className="update-btn"
+                                                onClick={() => populateFormForUpdate(log)}
+                                            >
+                                                Update
+                                            </button>
+                                            <button 
+                                                className="delete-btn"
+                                                onClick={() => handleDelete(log._id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

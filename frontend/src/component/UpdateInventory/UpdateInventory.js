@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateInventory.css';
+import { useAuth } from '../../context/AuthContext';
 
 function UpdateInventory() {
   const [inputs, setInputs] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { InventoryId } = useParams();
+  const { notifications, isAuthenticated } = useAuth();
 
   const categories = [
     "Vehicles & Machinery",

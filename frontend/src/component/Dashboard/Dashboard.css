@@ -1,0 +1,116 @@
+.dashboard {
+  margin-left: 280px; /* Offset for InventoryNav */
+  padding: 2rem 2rem;
+  max-width: calc(100% - 220px);
+  box-sizing: border-box;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+  padding-top: 5px;
+}
+
+.dashboard h1 {
+ 
+  color: var(--dark-green);
+  margin-bottom: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.dashboard h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
+  border-radius: 2px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.dashboard-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.8rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card h3 {
+  color: #141414;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.6rem;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-button {
+  display: inline-block;
+  padding: 0.9rem 1.4rem;
+  background-color: #1B5E20;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: 500;
+  text-align: center;
+}
+
+.action-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.user-details p,
+.system-status p {
+  margin: 0.6rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.system-status {
+  color: #27ae60;
+  font-weight: 500;
+}
+
+/* Responsive Handling */
+@media (max-width: 768px) {
+  .dashboard {
+    margin-left: 0;
+    padding: 1.2rem;
+    max-width: 100%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    padding: 1.2rem;
+  }
+
+  .action-button {
+    font-size: 0.95rem;
+    padding: 0.8rem 1rem;
+  }
+}

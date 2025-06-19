@@ -1,95 +1,115 @@
 /* Main Container */
 .maintenance-logs-container {
   font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  padding: 2rem;
-  margin-left: 280px;
-  background-color: #f8f9fa;
+  margin-left: 280px; /* Offset for InventoryNav */
+  padding: 2rem 2rem;
+  max-width: calc(100% - 220px);
+  box-sizing: border-box;
   min-height: 100vh;
-  transition: all 0.3s ease;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+  padding-top: 5px;
 }
 
 /* Title Styling */
 .maintenance-title {
-  text-align: center;
-  color: #1B5E20;
-  margin-bottom: 2rem;
+  color: var(--dark-green);
+  margin-bottom: 1.5rem;
   font-size: 2.2rem;
   font-weight: 600;
   position: relative;
-  padding-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  display: inline-block;
 }
 
 .maintenance-title::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
+  left: 0;
+  width: 60px;
   height: 4px;
-  background: linear-gradient(90deg, #28a745, #218838);
+  background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
   border-radius: 2px;
 }
 
 /* Form Styling */
-.maintenance-form {
-  margin-bottom: 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.2rem;
-  background: white;
-  padding: 1.8rem;
+.maintenance-form-container {
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.form-group {
+.maintenance-form-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.maintenance-form-group {
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
 }
 
-.maintenance-form input,
-.maintenance-form select {
-  padding: 0.8rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.25s ease;
-  background-color: #f8f9fa;
+.maintenance-form-group label {
+  font-weight: 600;
+  color: #1B5E20;
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
 }
 
-.maintenance-form input:focus,
-.maintenance-form select:focus {
+.maintenance-form-group input,
+.maintenance-form-group select {
+  padding: 0.85rem 1.1rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #f4f6f8;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.maintenance-form-group input:focus,
+.maintenance-form-group select:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
   outline: none;
-  border-color: #28a745;
-  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
-  background-color: white;
 }
 
-.error-input {
-  border-color: #dc3545 !important;
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
+.maintenance-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
-.form-submit-btn {
-  grid-column: 1 / -1;
-  padding: 0.85rem;
-  background: linear-gradient(135deg, #28a745, #218838);
-  color: white;
+.maintenance-btn {
+  background: #1B5E20;
+  color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.08rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  margin-right: 1rem;
 }
 
-.form-submit-btn:hover {
+.maintenance-btn:last-child {
+  margin-right: 0;
+}
+
+.maintenance-btn:hover {
+  background: #2980b9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #218838, #1e7e34);
 }
 
 /* Generate Report Button */
@@ -244,15 +264,20 @@
 }
 
 @media (max-width: 768px) {
-  .maintenance-form {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
+  .maintenance-form-container {
+    padding: 1.2rem 0.7rem;
   }
-  
+  .maintenance-form-row {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .maintenance-form-actions {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
   .maintenance-title {
     font-size: 1.8rem;
   }
-  
   .maintenance-table th,
   .maintenance-table td {
     padding: 0.75rem;
@@ -277,4 +302,113 @@
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
   background: #218838;
+}
+
+/* View Toggle Buttons */
+.view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.toggle-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    color: #495057;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+/* Calendar Container */
+.calendar-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+/* Calendar Event Styles */
+.completed-event {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+}
+
+.in-progress-event {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.pending-event {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+/* Calendar Customization */
+.rbc-calendar {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.rbc-header {
+    padding: 1rem;
+    font-weight: 600;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.rbc-today {
+    background-color: #e8f5e9 !important;
+}
+
+.rbc-event {
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.rbc-event:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+/* Responsive Calendar */
+@media (max-width: 768px) {
+    .calendar-container {
+        padding: 1rem;
+    }
+
+    .rbc-calendar {
+        font-size: 0.9rem;
+    }
+
+    .rbc-header {
+        padding: 0.5rem;
+    }
+
+    .rbc-event {
+        padding: 0.3rem;
+        font-size: 0.8rem;
+    }
+}
+
+input, select, th, td, label, .form-label, .form-control, .table-cell {
+  color: #141414 !important;
 }

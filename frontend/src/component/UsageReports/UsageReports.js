@@ -4,12 +4,17 @@ import Papa from "papaparse";
 import "./UsageReports.css";
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useAuth } from '../../context/AuthContext';
+import InventoryNav from "../InventoryNav/InventoryNav";
 
 //state for usage reports
 const UsageReports = () => {
+    const { token } = useAuth();
     const [usageReports, setUsageReports] = useState([]);
     const [filteredReports, setFilteredReports] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         projectName: "",
         itemId: "",
@@ -23,29 +28,47 @@ const UsageReports = () => {
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
-        fetchUsageReports();
-    }, []);
+        if (token) {
+            fetchUsageReports();
+        }
+    }, [token]);
 
     //filter reports based on search term
     useEffect(() => {
-        const filtered = usageReports.filter(report => 
-            report.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            report.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            report.usedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            report.itemId.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredReports(filtered);
+        if (usageReports) {
+            const filtered = usageReports.filter(report => 
+                report.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                report.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                report.usedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                report.itemId.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredReports(filtered);
+        }
     }, [searchTerm, usageReports]);
 
     //fetch usage reports from backend
     const fetchUsageReports = async () => {
         try {
-            const response = await fetch("http://localhost:5000/usage");
+            setLoading(true);
+            const response = await fetch("http://localhost:5000/usage", {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch usage reports');
+            }
             const data = await response.json();
-            setUsageReports(data.usageReports);
-            setFilteredReports(data.usageReports);
+            setUsageReports(data.usageReports || []);
+            setFilteredReports(data.usageReports || []);
+            setError(null);
         } catch (error) {
             console.error("Error fetching reports:", error);
+            setError(error.message);
+            setUsageReports([]);
+            setFilteredReports([]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -79,7 +102,10 @@ const UsageReports = () => {
         try {
             const response = await fetch(url, {
                 method,
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(formData),
             });
 
@@ -96,9 +122,12 @@ const UsageReports = () => {
                 });
                 setEditingId(null);
                 setErrors({});
+            } else {
+                throw new Error('Failed to submit usage report');
             }
         } catch (error) {
             console.error("Error submitting form:", error);
+            setError(error.message);
         }
     };
 
@@ -112,21 +141,27 @@ const UsageReports = () => {
         try {
             const response = await fetch(`http://localhost:5000/usage/${id}`, {
                 method: "DELETE",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.ok) {
                 fetchUsageReports();
+            } else {
+                throw new Error('Failed to delete usage report');
             }
         } catch (error) {
             console.error("Error deleting report:", error);
+            setError(error.message);
         }
     };
 
     //prepare data for chart
-    const chartData = filteredReports.map((report) => ({
+    const chartData = filteredReports?.map((report) => ({
         name: report.itemName,
         quantity: report.quantityUsed,
-    }));
+    })) || [];
 
     //download usage report as CSV
     const handleDownloadReport = () => {
@@ -225,112 +260,120 @@ const UsageReports = () => {
     return (
         <div className="usage-container">
             <h1 className="usage-title">Usage Reports</h1>
+            <InventoryNav />
 
-            <div className="button-container">
-                <button className="download-btn" onClick={handleDownloadReport}>
-                    Download CSV Report
-                </button>
-                <button className="download-btn" onClick={generatePDFReport}>
-                    Download PDF Report
-                </button>
-            </div>
+            {loading && <div className="loading">Loading usage reports...</div>}
+            {error && <div className="error">{error}</div>}
+            
+            {!loading && !error && (
+                <>
+                    <div className="button-container">
+                        <button className="download-btn" onClick={handleDownloadReport}>
+                            Download CSV Report
+                        </button>
+                        <button className="download-btn" onClick={generatePDFReport}>
+                            Download PDF Report
+                        </button>
+                    </div>
 
-            <div className="search-container">
-                <input 
-                    type="text" 
-                    className="search-input" 
-                    placeholder="Search reports..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <button className="search-btn">Search</button>
-            </div>
+                    <div className="search-container">
+                        <input 
+                            type="text" 
+                            className="search-input" 
+                            placeholder="Search reports..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <button className="search-btn">Search</button>
+                    </div>
 
-{/* usage report form */}
-            <form className="usage-form" onSubmit={handleSubmit}>
-                <input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleChange} required />
-                {errors.projectName && <span className="error">{errors.projectName}</span>}
+                    {/* usage report form */}
+                    <form className="usage-form" onSubmit={handleSubmit}>
+                        <input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleChange} required />
+                        {errors.projectName && <span className="error">{errors.projectName}</span>}
 
-                <input type="text" name="itemId" placeholder="Item ID" value={formData.itemId} onChange={handleChange} required />
-                {errors.itemId && <span className="error">{errors.itemId}</span>}
+                        <input type="text" name="itemId" placeholder="Item ID" value={formData.itemId} onChange={handleChange} required />
+                        {errors.itemId && <span className="error">{errors.itemId}</span>}
 
-                <input type="text" name="itemName" placeholder="Item Name" value={formData.itemName} onChange={handleChange} required />
-                {errors.itemName && <span className="error">{errors.itemName}</span>}
+                        <input type="text" name="itemName" placeholder="Item Name" value={formData.itemName} onChange={handleChange} required />
+                        {errors.itemName && <span className="error">{errors.itemName}</span>}
 
-                <input type="number" name="quantityUsed" placeholder="Quantity Used" value={formData.quantityUsed} onChange={handleChange} required min="1" />
-                {errors.quantityUsed && <span className="error">{errors.quantityUsed}</span>}
+                        <input type="number" name="quantityUsed" placeholder="Quantity Used" value={formData.quantityUsed} onChange={handleChange} required min="1" />
+                        {errors.quantityUsed && <span className="error">{errors.quantityUsed}</span>}
 
-                <input type="date" name="dateOfUsage" value={formData.dateOfUsage} onChange={handleChange} required />
-                {errors.dateOfUsage && <span className="error">{errors.dateOfUsage}</span>}
+                        <input type="date" name="dateOfUsage" value={formData.dateOfUsage} onChange={handleChange} required />
+                        {errors.dateOfUsage && <span className="error">{errors.dateOfUsage}</span>}
 
-                <input type="text" name="usedBy" placeholder="Used By" value={formData.usedBy} onChange={handleChange} required />
-                {errors.usedBy && <span className="error">{errors.usedBy}</span>}
+                        <input type="text" name="usedBy" placeholder="Used By" value={formData.usedBy} onChange={handleChange} required />
+                        {errors.usedBy && <span className="error">{errors.usedBy}</span>}
 
-                <input type="text" name="purpose" placeholder="Purpose (Optional)" value={formData.purpose} onChange={handleChange} />
+                        <input type="text" name="purpose" placeholder="Purpose (Optional)" value={formData.purpose} onChange={handleChange} />
 
-                <button type="submit">{editingId ? "Update Report" : "Add Report"}</button>
-            </form>
+                        <button type="submit">{editingId ? "Update Report" : "Add Report"}</button>
+                    </form>
 
-            <table className="usage-table">
-                <thead>
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Item ID</th>
-                        <th>Item Name</th>
-                        <th>Quantity Used</th>
-                        <th>Date of Usage</th>
-                        <th>Used By</th>
-                        <th>Purpose</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredReports.length > 0 ? (
-                        filteredReports.map((report) => (
-                            <tr key={report._id}>
-                                <td>{report.projectName}</td>
-                                <td>{report.itemId}</td>
-                                <td>{report.itemName}</td>
-                                <td>{report.quantityUsed}</td>
-                                <td>{new Date(report.dateOfUsage).toLocaleDateString()}</td>
-                                <td>{report.usedBy}</td>
-                                <td>{report.purpose || "N/A"}</td>
-                                <td>
-                                    <button className="edit-btn" onClick={() => handleEdit(report)}>Update</button>
-                                    <button className="delete-btn" onClick={() => handleDelete(report._id)}>Delete</button>
-                                </td>
+                    <table className="usage-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Item ID</th>
+                                <th>Item Name</th>
+                                <th>Quantity Used</th>
+                                <th>Date of Usage</th>
+                                <th>Used By</th>
+                                <th>Purpose</th>
+                                <th>Actions</th>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="8">No usage reports found</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {filteredReports.length > 0 ? (
+                                filteredReports.map((report) => (
+                                    <tr key={report._id}>
+                                        <td>{report.projectName}</td>
+                                        <td>{report.itemId}</td>
+                                        <td>{report.itemName}</td>
+                                        <td>{report.quantityUsed}</td>
+                                        <td>{new Date(report.dateOfUsage).toLocaleDateString()}</td>
+                                        <td>{report.usedBy}</td>
+                                        <td>{report.purpose || "N/A"}</td>
+                                        <td>
+                                            <button className="edit-btn" onClick={() => handleEdit(report)}>Update</button>
+                                            <button className="delete-btn" onClick={() => handleDelete(report._id)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="8">No usage reports found</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
 
-            <div className="chart-container">
-                <h3>Usage Statistics</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="quantity" fill="#2E7D32" />
-                    </BarChart>
-                </ResponsiveContainer>
+                    <div className="chart-container">
+                        <h3>Usage Statistics</h3>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Bar dataKey="quantity" fill="#2E7D32" />
+                            </BarChart>
+                        </ResponsiveContainer>
 
-                <h3>Usage Trend</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="quantity" stroke="#2E7D32" />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+                        <h3>Usage Trend</h3>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Line type="monotone" dataKey="quantity" stroke="#2E7D32" />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

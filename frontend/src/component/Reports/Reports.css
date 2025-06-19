@@ -1,0 +1,233 @@
+.report-container {
+    margin-left: 280px;
+    padding: 2rem 2rem;
+    max-width: calc(100% - 220px);
+    box-sizing: border-box;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    border-radius: 5px;
+    padding-top: 5px;
+}
+
+.report-container h1 {
+    color: #1B5E20;
+    margin-bottom: 1.5rem;
+    font-size: 2.2rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.report-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #2E7D32, #4CAF50);
+    border-radius: 2px;
+}
+
+.report-filters {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.report-filters label {
+    font-weight: 600;
+    color: #1B5E20;
+    margin-bottom: 0.4rem;
+    font-size: 1rem;
+}
+
+.search-input,
+.filter-select {
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 7px;
+    font-size: 1rem;
+    background: #f4f6f8;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus,
+.filter-select:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76,175,80,0.15);
+    outline: none;
+}
+
+.report-btn {
+    background: #1B5E20;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+}
+
+.report-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .report-filters {
+        padding: 1.2rem 0.7rem;
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+}
+
+.report-filters > * {
+    flex: 1 1 220px;
+    min-width: 200px;
+    margin-bottom: 0.7rem;
+}
+
+@media (max-width: 768px) {
+    .report-filters {
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+    .report-filters > * {
+        min-width: 0;
+        width: 100%;
+        margin-bottom: 0.7rem;
+    }
+}
+
+.report-table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.report-table th,
+.report-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.report-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.report-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.report-table, .report-table th, .report-table td {
+  color: #141414;
+}
+
+.status-badge,
+.priority-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.active,
+.status-badge.scheduled {
+    background-color: #e3fcef;
+    color: #27ae60;
+}
+
+.status-badge.maintenance-required,
+.status-badge.overdue {
+    background-color: #ffe3e3;
+    color: #e74c3c;
+}
+
+.priority-badge.high {
+    background-color: #ffe3e3;
+    color: #e74c3c;
+}
+
+.priority-badge.medium {
+    background-color: #fff3e0;
+    color: #f39c12;
+}
+
+.priority-badge.low {
+    background-color: #e3fcef;
+    color: #27ae60;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.error {
+    color: #e74c3c;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 0.9rem 1.4rem;
+    background-color: #1B5E20;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+    text-align: center;
+}
+
+.action-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .report-container {
+        padding: 1rem;
+    }
+
+    .report-filters {
+        flex-direction: column;
+    }
+
+    .search-input,
+    .filter-select {
+        width: 100%;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 0.75rem;
+    }
+} 

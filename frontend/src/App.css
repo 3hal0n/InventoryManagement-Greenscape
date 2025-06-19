@@ -1,0 +1,10 @@
+.app {
+  background: transparent;
+  min-height: 100vh;
+  color: inherit;
+}
+
+.content {
+  background: transparent;
+  min-height: 100vh;
+}

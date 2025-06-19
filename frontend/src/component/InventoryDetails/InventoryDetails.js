@@ -282,7 +282,7 @@ function InventoryDetails() {
     return (
         <div className="inventory-details-container">
             <InventoryNav />
-            <h1 className="dashboard-title">Inventory Dashboard</h1>
+            <h1 className="dashboard-title">Inventory Details</h1>
 
             {showNotification && (
                 <div ref={notificationRef} className={`notification ${notificationSeverity}`}>
@@ -316,6 +316,7 @@ function InventoryDetails() {
                 <table className="inventory-table" ref={tableRef}>
                     <thead>
                         <tr>
+                            <th>Item ID</th>
                             <th>Item Name</th>
                             <th>Category</th>
                             <th>Quantity</th>
@@ -336,6 +337,7 @@ function InventoryDetails() {
                                         (inventory.quantity <= 1 ? 'critical-row' : 'warning-row') : ''
                                     }
                                 >
+                                    <td>{inventory._id}</td>
                                     <td>{inventory.itemName}</td>
                                     <td>{inventory.category}</td>
                                     <td className={

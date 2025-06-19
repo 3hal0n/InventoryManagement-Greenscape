@@ -1,5 +1,4 @@
 import React from 'react'
-import { Router } from 'react-router-dom'
 import InventoryNav from '../InventoryNav/InventoryNav'
 import "./StockTracking.css";
 

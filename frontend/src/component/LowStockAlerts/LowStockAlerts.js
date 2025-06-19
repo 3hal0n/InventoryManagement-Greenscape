@@ -5,14 +5,19 @@ import "./LowStockAlerts.css";
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { FaFilePdf, FaSearch, FaTruck, FaTag, FaSort, FaEdit, FaSave, FaTimes, FaEnvelope, FaCheckCircle } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 //api endpoint
 const URL = "http://localhost:5000/inventories";
 
 //fetch inventory data
-const fetchHandler = async () => {
+const fetchHandler = async (token) => {
     try {
-        const response = await axios.get(URL);
+        const response = await axios.get(URL, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Error fetching inventory data:", error);
@@ -41,6 +46,7 @@ const updateReorderAmount = async (id, reorderAmount) => {
 };
 
 function LowStockAlerts() {
+    const { token } = useAuth();
     const [lowStockItems, setLowStockItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
@@ -55,6 +61,7 @@ function LowStockAlerts() {
     const [emailStatus, setEmailStatus] = useState("");
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
     const [tempReorderAmount, setTempReorderAmount] = useState(0);
+    const [error, setError] = useState("");
 
     const handleSaveReorderAmount = async (item) => {
         try {
@@ -65,18 +72,22 @@ function LowStockAlerts() {
                     : i
             );
             setLowStockItems(updatedItems);
+            setFilteredItems(updatedItems);
             setEditingId(null);
         } catch (error) {
             console.error("Failed to update reorder amount:", error);
+            setError("Failed to update reorder amount");
         }
     };
 
     //fetch data
     useEffect(() => {
         const fetchData = async () => {
+            if (!token) return;
+            
             try {
                 setLoading(true);
-                const data = await fetchHandler();
+                const data = await fetchHandler(token);
                 if (data && data.inventories) {
                     const lowStock = data.inventories.map(item => ({ 
                         ...item, 
@@ -88,12 +99,13 @@ function LowStockAlerts() {
                 }
             } catch (error) {
                 console.error("Error:", error);
+                setError("Failed to fetch low stock items");
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
-    }, []);
+    }, [token]);
 
     //Filters and sorting
     useEffect(() => {
@@ -198,6 +210,10 @@ function LowStockAlerts() {
             const response = await axios.post('http://localhost:5000/inventories/send-email', {
                 pdfData,
                 recipientEmail
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
             if (response.data.message === "Email sent successfully") {
@@ -243,9 +259,11 @@ function LowStockAlerts() {
                     : i
             );
             setLowStockItems(updatedItems);
+            setFilteredItems(updatedItems);
             setEditingId(null);
         } catch (error) {
             console.error("Failed to update reorder level:", error);
+            setError("Failed to update reorder level");
         }
     };
 
@@ -355,6 +373,7 @@ function LowStockAlerts() {
                         <table>
                             <thead>
                                 <tr>
+                                    <th>Item ID</th>
                                     <th>Item Name</th>
                                     <th>Category</th>
                                     <th>Current Qty</th>
@@ -367,6 +386,7 @@ function LowStockAlerts() {
                                 {filteredItems.length > 0 ? (
                                     filteredItems.map((item) => (
                                         <tr key={item._id} className={`alert-row ${item.quantity <= 1 ? 'critical' : ''}`}>
+                                            <td>{item._id}</td>
                                             <td>{item.itemName}</td>
                                             <td>{item.category}</td>
                                             <td>

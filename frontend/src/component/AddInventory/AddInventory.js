@@ -7,6 +7,7 @@ import "./AddInventory.css";
 function AddInventory() {
   const history = useNavigate();
   const [inputs, setInputs] = useState({
+    itemId: "",
     itemName: "",
     category: "",
     quantity: "",
@@ -111,6 +112,17 @@ function AddInventory() {
       <div className="form-container">
         <h1>Add Inventory</h1>
         <form onSubmit={handleSubmit} className="inventory-form">
+
+        <label>Item id:</label>
+          <input 
+            type="text" 
+            name="itemId" 
+            value={inputs._id} 
+            onChange={handleChange} 
+            className={errors._id ? 'error-input' : ''}
+          />
+          {errors.itemName && <span className="error-message">{errors._id}</span>}
+
           <label>Item Name:</label>
           <input 
             type="text" 

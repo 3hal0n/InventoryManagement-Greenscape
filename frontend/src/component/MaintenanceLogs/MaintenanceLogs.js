@@ -9,6 +9,9 @@ import InventoryNav from '../InventoryNav/InventoryNav';
 
 applyPlugin(jsPDF);
 
+//Force refresh
+
+
 const MaintenanceLogs = () => {
     const { token } = useAuth();
     const [logs, setLogs] = useState([]);

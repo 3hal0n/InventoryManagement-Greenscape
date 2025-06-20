@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateInventory.css';
 import { useAuth } from '../../context/AuthContext';
+import InventoryNav from '../InventoryNav/InventoryNav';
 
 function UpdateInventory() {
   const [inputs, setInputs] = useState(null);
@@ -73,6 +74,7 @@ function UpdateInventory() {
 
   return (
     <div className="form-container">
+      <InventoryNav />
       <h1>Update Inventory</h1>
       <form onSubmit={handleSubmit} className="inventory-form">
         <label>Item Name:</label>

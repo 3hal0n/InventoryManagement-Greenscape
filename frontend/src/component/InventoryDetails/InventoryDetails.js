@@ -350,7 +350,7 @@ function InventoryDetails() {
                                     <td>Rs.{inventory.price.toFixed(2)}</td>
                                     <td>{inventory.maintenanceSchedule}</td>
                                     <td className="action-buttons">
-                                        <Link to={`/AddInventory/${inventory._id}`} className="update-btn">
+                                        <Link to={`/update-inventory/${inventory._id}`} className="update-btn">
                                             Update
                                         </Link>
                                         <button onClick={() => deleteHandler(inventory._id)} className="delete-btn">

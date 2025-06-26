@@ -288,29 +288,55 @@ const UsageReports = () => {
                     </div>
 
                     {/* usage report form */}
-                    <form className="usage-form" onSubmit={handleSubmit}>
-                        <input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleChange} required />
-                        {errors.projectName && <span className="error">{errors.projectName}</span>}
-
-                        <input type="text" name="itemId" placeholder="Item ID" value={formData.itemId} onChange={handleChange} required />
-                        {errors.itemId && <span className="error">{errors.itemId}</span>}
-
-                        <input type="text" name="itemName" placeholder="Item Name" value={formData.itemName} onChange={handleChange} required />
-                        {errors.itemName && <span className="error">{errors.itemName}</span>}
-
-                        <input type="number" name="quantityUsed" placeholder="Quantity Used" value={formData.quantityUsed} onChange={handleChange} required min="1" />
-                        {errors.quantityUsed && <span className="error">{errors.quantityUsed}</span>}
-
-                        <input type="date" name="dateOfUsage" value={formData.dateOfUsage} onChange={handleChange} required />
-                        {errors.dateOfUsage && <span className="error">{errors.dateOfUsage}</span>}
-
-                        <input type="text" name="usedBy" placeholder="Used By" value={formData.usedBy} onChange={handleChange} required />
-                        {errors.usedBy && <span className="error">{errors.usedBy}</span>}
-
-                        <input type="text" name="purpose" placeholder="Purpose (Optional)" value={formData.purpose} onChange={handleChange} />
-
-                        <button type="submit">{editingId ? "Update Report" : "Add Report"}</button>
-                    </form>
+                    <div className="maintenance-form-container">
+                        <form className="maintenance-form" onSubmit={handleSubmit}>
+                            <div className="maintenance-form-row">
+                                <div className="maintenance-form-group">
+                                    <label>Project Name</label>
+                                    <input type="text" name="projectName" placeholder="Project Name" value={formData.projectName} onChange={handleChange} required />
+                                    {errors.projectName && <span className="error-message">{errors.projectName}</span>}
+                                </div>
+                                <div className="maintenance-form-group">
+                                    <label>Item ID</label>
+                                    <input type="text" name="itemId" placeholder="Item ID" value={formData.itemId} onChange={handleChange} required />
+                                    {errors.itemId && <span className="error-message">{errors.itemId}</span>}
+                                </div>
+                            </div>
+                            <div className="maintenance-form-row">
+                                <div className="maintenance-form-group">
+                                    <label>Item Name</label>
+                                    <input type="text" name="itemName" placeholder="Item Name" value={formData.itemName} onChange={handleChange} required />
+                                    {errors.itemName && <span className="error-message">{errors.itemName}</span>}
+                                </div>
+                                <div className="maintenance-form-group">
+                                    <label>Quantity Used</label>
+                                    <input type="number" name="quantityUsed" placeholder="Quantity Used" value={formData.quantityUsed} onChange={handleChange} required min="1" />
+                                    {errors.quantityUsed && <span className="error-message">{errors.quantityUsed}</span>}
+                                </div>
+                            </div>
+                            <div className="maintenance-form-row">
+                                <div className="maintenance-form-group">
+                                    <label>Date of Usage</label>
+                                    <input type="date" name="dateOfUsage" value={formData.dateOfUsage} onChange={handleChange} required />
+                                    {errors.dateOfUsage && <span className="error-message">{errors.dateOfUsage}</span>}
+                                </div>
+                                <div className="maintenance-form-group">
+                                    <label>Used By</label>
+                                    <input type="text" name="usedBy" placeholder="Used By" value={formData.usedBy} onChange={handleChange} required />
+                                    {errors.usedBy && <span className="error-message">{errors.usedBy}</span>}
+                                </div>
+                            </div>
+                            <div className="maintenance-form-row">
+                                <div className="maintenance-form-group">
+                                    <label>Purpose (Optional)</label>
+                                    <input type="text" name="purpose" placeholder="Purpose (Optional)" value={formData.purpose} onChange={handleChange} />
+                                </div>
+                            </div>
+                            <div className="maintenance-form-actions">
+                                <button type="submit" className="maintenance-btn">{editingId ? "Update Report" : "Add Report"}</button>
+                            </div>
+                        </form>
+                    </div>
 
                     <table className="usage-table">
                         <thead>
@@ -350,27 +376,30 @@ const UsageReports = () => {
                         </tbody>
                     </table>
 
-                    <div className="chart-container">
-                        <h3>Usage Statistics</h3>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="quantity" fill="#2E7D32" />
-                            </BarChart>
-                        </ResponsiveContainer>
-
-                        <h3>Usage Trend</h3>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Line type="monotone" dataKey="quantity" stroke="#2E7D32" />
-                            </LineChart>
-                        </ResponsiveContainer>
+                    <div className="charts-flex-container">
+                        <div className="chart-card">
+                            <h3>Usage Statistics</h3>
+                            <ResponsiveContainer width="100%" height={260}>
+                                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="quantity" fill="#2E7D32" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="chart-card">
+                            <h3>Usage Trend</h3>
+                            <ResponsiveContainer width="100%" height={260}>
+                                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Line type="monotone" dataKey="quantity" stroke="#2E7D32" />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </>
             )}

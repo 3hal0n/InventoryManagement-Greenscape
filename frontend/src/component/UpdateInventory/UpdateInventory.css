@@ -1,24 +1,24 @@
 .form-container {
-  margin-left: 280px;
-  max-width: 1200px;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  padding: 2rem 2rem;
-  background-color: #f4f6f8;
-  border-radius: 5px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin: 60px auto 20px auto;
+  padding: 24px 24px 20px 24px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
   align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-container h1 {
   color: #1B5E20;
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
+  margin-bottom: 1.2rem;
+  font-size: 2rem;
   font-weight: 600;
   position: relative;
-  padding-bottom: 0.5rem;
-  display: inline-block;
-  text-align: left;
+  padding-bottom: 0.4rem;
+  display: block;
+  text-align: center;
 }
 
 .form-container h1::after {
@@ -35,22 +35,25 @@
 .inventory-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.1rem;
+  width: 100%;
 }
 
 .inventory-form label {
   font-weight: 600;
   color: #444;
   margin-bottom: 0.3rem;
+  font-size: 1rem;
 }
 
 .inventory-form input,
 .inventory-form select {
   padding: 0.8rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 5px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  margin-top: 0.2rem;
 }
 
 .inventory-form input:focus,
@@ -102,18 +105,9 @@
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .form-container {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-  
-  .form-container h1 {
-    font-size: 1.5rem;
-  }
-  
-  .inventory-form input,
-  .inventory-form select {
-    padding: 0.6rem;
+    width: 95%;
+    padding: 12px 4px;
   }
 }

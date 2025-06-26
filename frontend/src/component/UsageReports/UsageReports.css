@@ -292,3 +292,116 @@
         border-radius: 4px;
     }
 }
+
+/* Make usage form and inputs larger and clearer */
+.usage-form-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  padding: 2.5rem 3rem;
+  margin-bottom: 2.5rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.usage-form-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+.usage-form-row input {
+  flex: 1 1 0;
+  font-size: 1.1rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 10px;
+  border: 1.5px solid #e0e0e0;
+  background: #f8f9fa;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.usage-form-row input::placeholder {
+  font-size: 1.05rem;
+  color: #888;
+  opacity: 1;
+}
+
+.usage-form-row input:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.13);
+  background: #fff;
+}
+
+.usage-form-row button[type="submit"] {
+  font-size: 1.15rem;
+  padding: 1.1rem 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  border: none;
+  width: 100%;
+  margin-top: 0.5rem;
+  transition: background 0.3s, transform 0.2s;
+}
+.usage-form-row button[type="submit"]:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1100px) {
+  .usage-form-container {
+    max-width: 99vw;
+    padding: 1.2rem 0.7rem;
+  }
+  .usage-form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.charts-flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.08);
+  padding: 32px 24px 24px 24px;
+  max-width: 420px;
+  min-width: 300px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-card h3 {
+  color: #2E7D32;
+  margin-bottom: 18px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .charts-flex-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .chart-card {
+    max-width: 95vw;
+    min-width: 0;
+    width: 100%;
+  }
+  .usage-form-row {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+}

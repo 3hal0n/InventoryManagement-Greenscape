@@ -230,133 +230,127 @@ const MaintenanceLogs = () => {
         <div className="maintenance-logs-container">
             <InventoryNav />
             <h1 className="maintenance-title">Maintenance Logs</h1>
-            <form className="maintenance-form" onSubmit={handleSubmit}>
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Item ID</label>
-                        <input
-                            type="text"
-                            name="itemId"
-                            value={formData.itemId}
-                            onChange={handleChange}
-                            className={errors.itemId ? 'error-input' : ''}
-                        />
-                        {errors.itemId && <span className="error-message">{errors.itemId}</span>}
+            <div className="maintenance-form-container">
+                <form className="maintenance-form" onSubmit={handleSubmit}>
+                    <div className="maintenance-form-row">
+                        <div className="maintenance-form-group">
+                            <label>Item ID</label>
+                            <input
+                                type="text"
+                                name="itemId"
+                                value={formData.itemId}
+                                onChange={handleChange}
+                                className={errors.itemId ? 'error-input' : ''}
+                            />
+                            {errors.itemId && <span className="error-message">{errors.itemId}</span>}
+                        </div>
+                        <div className="maintenance-form-group">
+                            <label>Item Name</label>
+                            <input
+                                type="text"
+                                name="itemName"
+                                value={formData.itemName}
+                                onChange={handleChange}
+                                className={errors.itemName ? 'error-input' : ''}
+                            />
+                            {errors.itemName && <span className="error-message">{errors.itemName}</span>}
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <label>Item Name</label>
-                        <input
-                            type="text"
-                            name="itemName"
-                            value={formData.itemName}
-                            onChange={handleChange}
-                            className={errors.itemName ? 'error-input' : ''}
-                        />
-                        {errors.itemName && <span className="error-message">{errors.itemName}</span>}
+                    <div className="maintenance-form-row">
+                        <div className="maintenance-form-group">
+                            <label>Maintenance Type</label>
+                            <select
+                                name="maintenanceType"
+                                value={formData.maintenanceType}
+                                onChange={handleChange}
+                                className={errors.maintenanceType ? 'error-input' : ''}
+                            >
+                                <option value="">Select Type</option>
+                                <option value="Repair">Repair</option>
+                                <option value="Replacement">Replacement</option>
+                                <option value="Inspection">Inspection</option>
+                                <option value="Cleaning">Cleaning</option>
+                            </select>
+                            {errors.maintenanceType && <span className="error-message">{errors.maintenanceType}</span>}
+                        </div>
+                        <div className="maintenance-form-group">
+                            <label>Status</label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                className={errors.status ? 'error-input' : ''}
+                            >
+                                <option value="">Select Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="In Progress">In Progress</option>
+                            </select>
+                            {errors.status && <span className="error-message">{errors.status}</span>}
+                        </div>
                     </div>
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Maintenance Type</label>
-                        <select
-                            name="maintenanceType"
-                            value={formData.maintenanceType}
-                            onChange={handleChange}
-                            className={errors.maintenanceType ? 'error-input' : ''}
-                        >
-                            <option value="">Select Type</option>
-                            <option value="Repair">Repair</option>
-                            <option value="Replacement">Replacement</option>
-                            <option value="Inspection">Inspection</option>
-                            <option value="Cleaning">Cleaning</option>
-                        </select>
-                        {errors.maintenanceType && <span className="error-message">{errors.maintenanceType}</span>}
+                    <div className="maintenance-form-row">
+                        <div className="maintenance-form-group">
+                            <label>Maintenance Date</label>
+                            <input
+                                type="date"
+                                name="maintenanceDate"
+                                value={formData.maintenanceDate}
+                                onChange={handleChange}
+                                className={errors.maintenanceDate ? 'error-input' : ''}
+                            />
+                            {errors.maintenanceDate && <span className="error-message">{errors.maintenanceDate}</span>}
+                        </div>
+                        <div className="maintenance-form-group">
+                            <label>Next Maintenance Date</label>
+                            <input
+                                type="date"
+                                name="nextMaintenanceDate"
+                                value={formData.nextMaintenanceDate}
+                                onChange={handleChange}
+                                className={errors.nextMaintenanceDate ? 'error-input' : ''}
+                            />
+                            {errors.nextMaintenanceDate && <span className="error-message">{errors.nextMaintenanceDate}</span>}
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <label>Status</label>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            className={errors.status ? 'error-input' : ''}
-                        >
-                            <option value="">Select Status</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Completed">Completed</option>
-                            <option value="In Progress">In Progress</option>
-                        </select>
-                        {errors.status && <span className="error-message">{errors.status}</span>}
+                    <div className="maintenance-form-row">
+                        <div className="maintenance-form-group">
+                            <label>Performed By</label>
+                            <input
+                                type="text"
+                                name="performedBy"
+                                value={formData.performedBy}
+                                onChange={handleChange}
+                                className={errors.performedBy ? 'error-input' : ''}
+                            />
+                            {errors.performedBy && <span className="error-message">{errors.performedBy}</span>}
+                        </div>
+                        <div className="maintenance-form-group">
+                            <label>Cost</label>
+                            <input
+                                type="number"
+                                name="cost"
+                                value={formData.cost}
+                                onChange={handleChange}
+                                min="0"
+                                step="0.01"
+                                className={errors.cost ? 'error-input' : ''}
+                            />
+                            {errors.cost && <span className="error-message">{errors.cost}</span>}
+                        </div>
                     </div>
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Maintenance Date</label>
-                        <input
-                            type="date"
-                            name="maintenanceDate"
-                            value={formData.maintenanceDate}
-                            onChange={handleChange}
-                            className={errors.maintenanceDate ? 'error-input' : ''}
-                        />
-                        {errors.maintenanceDate && <span className="error-message">{errors.maintenanceDate}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Next Maintenance Date</label>
-                        <input
-                            type="date"
-                            name="nextMaintenanceDate"
-                            value={formData.nextMaintenanceDate}
-                            onChange={handleChange}
-                            className={errors.nextMaintenanceDate ? 'error-input' : ''}
-                        />
-                        {errors.nextMaintenanceDate && <span className="error-message">{errors.nextMaintenanceDate}</span>}
-                    </div>
-                </div>
-
-                <div className="form-row">
-                    <div className="form-group">
-                        <label>Performed By</label>
-                        <input
-                            type="text"
-                            name="performedBy"
-                            value={formData.performedBy}
-                            onChange={handleChange}
-                            className={errors.performedBy ? 'error-input' : ''}
-                        />
-                        {errors.performedBy && <span className="error-message">{errors.performedBy}</span>}
-                    </div>
-
-                    <div className="form-group">
-                        <label>Cost</label>
-                        <input
-                            type="number"
-                            name="cost"
-                            value={formData.cost}
-                            onChange={handleChange}
-                            min="0"
-                            step="0.01"
-                            className={errors.cost ? 'error-input' : ''}
-                        />
-                        {errors.cost && <span className="error-message">{errors.cost}</span>}
-                    </div>
-                </div>
-
-                <div className="form-actions">
-                    <button type="submit" className="maintenance-btn">
-                        {editingId ? 'Update Log' : 'Add Log'}
-                    </button>
-                    {editingId && (
-                        <button type="button" className="maintenance-btn" onClick={resetForm}>
-                            Cancel
+                    <div className="maintenance-form-actions">
+                        <button type="submit" className="maintenance-btn">
+                            {editingId ? 'Update Log' : 'Add Log'}
                         </button>
-                    )}
-                </div>
-            </form>
+                        {editingId && (
+                            <button type="button" className="maintenance-btn" onClick={resetForm}>
+                                Cancel
+                            </button>
+                        )}
+                    </div>
+                </form>
+            </div>
             <div className="actions-bar">
                 <button className="generate-report-btn" onClick={generateReport}>
                     Generate Report

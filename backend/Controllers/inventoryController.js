@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 require('dotenv').config();
 
 // Email configuration
-const emailUser = process.env.EMAIL || 'greenlandscape.pvt@gmail.com';
+const emailUser = process.env.EMAIL || 'greenscape1234@gmail.com';
 const emailPassword = process.env.EMAIL_PASSWORD;
 
 const transporter = nodemailer.createTransport({

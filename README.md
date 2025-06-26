@@ -1,43 +1,93 @@
-# InventoryManagement-Greenscape
+# 🧰 Item Inventory & Maintenance Management System
 
-A comprehensive inventory management system designed for Greenscape, combining powerful backend logic with a modern, responsive frontend.
+A full-stack web application for efficient inventory tracking, usage logging, and maintenance management. Built for modern organizations, it streamlines asset handling with real-time alerts, interactive 3D models, and exportable reports — all within a secure, role-based environment.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Create, Read, Update, and Delete inventory items  
-- 📁 Categorize items by type (e.g., Vehicles & Machinery, Construction Supplies)  
-- 🔧 Track maintenance schedules  
-- 📊 Monitor item quantity and pricing  
-- 🧾 Supplier management and organization  
-- ⚠️ Low stock alerts with reorder management  
-- 💻 Clean and responsive user interface
+### 🔐 Authentication & Role-Based Access
+- Secure JWT-based login/registration
+- Role-based access: **Admin**, **Manager**, **Employee**
+- Customized dashboard views and permissions per role
+
+### 📦 Inventory Management
+- Add, update, and delete items
+- Track quantities, categories, suppliers, and reorder thresholds
+
+### 📉 Stock Monitoring
+- Real-time stock level tracking
+- Configurable low-stock alerts
+
+### 📝 Usage Reporting
+- Log item usage with project name, purpose, and date
+- Search/filter logs and export as **CSV** or **PDF**
+
+### 🛠️ Maintenance Logs
+- Record maintenance events
+- Schedule future maintenance
+- Track costs and history per item
+
+### 📬 Notifications
+- Alerts for low-stock items and maintenance due
+
+### 📊 Data Visualization
+- Realtime inventory and usage charts with **Chart.js** and **Recharts**
+
+### 🖼️ 3D Model Integration
+- Upload and interact with `.glb` or `.gltf` inventory models
+- Rotate, zoom, and pan in a live preview
+
+### 📄 Export Support
+- Generate downloadable reports (Inventory, Usage, Maintenance) in PDF/CSV
+
+### 📱 Responsive UI
+- Optimized for desktops, tablets, and mobile devices
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer        | Technology         |
-|--------------|--------------------|
-| **Frontend** | React.js           |
-| **Backend**  | Node.js + Express  |
-| **Database** | MongoDB            |
-| **Styling**  | CSS (modern layout & responsiveness)
+**Frontend**  
+- React.js  
+- Chart.js, Recharts  
+- Three.js (for 3D models)  
+- CSS  
+
+**Backend**  
+- Node.js  
+- Express.js  
+
+**Database**  
+- MongoDB (NoSQL)
+
+**Authentication**  
+- JWT (JSON Web Tokens)
+
+**PDF Generation**  
+- jsPDF  
+- jsPDF-AutoTable
 
 ---
 
-## 📁 Project Structure
-InventoryManagement-Greenscape/ ├── backend/ # Node.js & Express backend ├── frontend/ # React.js frontend └── LICENSE
+## 👥 Roles & Permissions
+
+| Role        | Permissions                                                                 |
+|-------------|------------------------------------------------------------------------------|
+| **Admin**   | Full access to all features (users, inventory, usage, maintenance, reports) |
+| **Manager** | Manage inventory, usage, maintenance, and view/export reports               |
+| **Employee**| View inventory, submit usage logs, limited maintenance access               |
+
+> 🔒 Only **Admins** can manage user roles.  
+> 📝 Only **Admins** and **Managers** can add/edit/delete usage or maintenance logs.
 
 ---
 
-## 📄 License
+## 🖼️ 3D Model Viewer
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more details.
+- Upload `.glb` / `.gltf` files for assets like machinery or tools  
+- Supports rotation, zoom, and interactive inspection  
+- Helps technicians and managers visualize physical assets in detail
 
 ---
 
-## 🤝 Contributions
-
-Suggestions, issues, and pull requests are welcome. Let's make inventory smarter—together.
